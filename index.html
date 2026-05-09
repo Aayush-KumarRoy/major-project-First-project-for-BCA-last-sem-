@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BharatVault | Smart Group Savings</title>
+    <!-- BINDING THE CSS FILE -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">BharatVault</div>
+        <div class="user-badge">Group Account: Active</div>
+    </nav>
+
+    <div class="container">
+        <!-- Growth Engine -->
+        <div class="stats-grid">
+            <div class="card-main">
+                <p>Total Group Wallet</p>
+                <h1>₹{{ "{:,.2f}".format(total) }}</h1>
+            </div>
+            <div class="card-yield">
+                <p>Simulated Yield Growth (5%)</p>
+                <h1 class="yield-text">+₹{{ "{:,.2f}".format(yield_earned) }}</h1>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 30px;">
+            <!-- Buckets Section -->
+            <div style="flex: 2;">
+                <h2>Goal Buckets</h2>
+                {% for bucket in buckets %}
+                <div class="bucket-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h3 style="margin:0">{{ bucket[1] }}</h3>
+                        <span>Target: ₹{{ bucket[2] }}</span>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ (bucket[3]/bucket[2])*100 if bucket[2] > 0 else 0 }}%"></div>
+                    </div>
+
+                    <form action="/deposit" method="POST" class="input-group">
+                        <input type="hidden" name="bucket_id" value="{{ bucket[0] }}">
+                        <input type="text" name="user" placeholder="Name" required>
+                        <input type="number" name="amount" placeholder="Amount (₹)" required>
+                        <button type="submit">Contribute</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Transaction Feed -->
+            <div style="flex: 1; background: white; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                <h3>Live Activity</h3>
+                <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 15px;">
+                {% for tx in transactions %}
+                <div style="margin-bottom: 15px; font-size: 0.9rem;">
+                    <strong>{{ tx[1] }}</strong> added 
+                    <span style="color: #10b981; font-weight:bold;">₹{{ tx[2] }}</span>
+                    <div style="color: #94a3b8; font-size: 0.75rem;">{{ tx[3] }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
